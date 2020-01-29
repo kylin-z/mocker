@@ -40,6 +40,9 @@ body {
   .app-container {
     height: 100%;
   }
+  .el-aside {
+    overflow: hidden;
+  }
   .app-menu {
     height: 100%;
   }

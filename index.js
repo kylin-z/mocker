@@ -6,7 +6,7 @@ function createWindow() {
     width: 800,
     height: 600,
     //关闭跨域限制
-    webPreferences: { webSecurity: false }
+    webPreferences: { webSecurity: false, nodeIntegration: true }
   });
 
   win.webContents.openDevTools();
@@ -16,3 +16,5 @@ function createWindow() {
 }
 
 app.on("ready", createWindow);
+
+require('./server');

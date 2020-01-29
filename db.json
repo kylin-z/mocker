@@ -1,0 +1,11 @@
+{
+  "rules": [
+    {
+      "id": "2nilpMXF",
+      "method": "GET",
+      "response": {},
+      "type": "EQUAL",
+      "url": "a"
+    }
+  ]
+}
