@@ -1,11 +1,24 @@
 {
   "rules": [
     {
-      "id": "2nilpMXF",
+      "id": "_pt1zEEf",
       "method": "GET",
-      "response": {},
+      "response": {
+        "body": "{\r\n  a: 1\r\n}"
+      },
+      "status": true,
       "type": "EQUAL",
-      "url": "a"
+      "url": "/a/b",
+      "moduleId": "2bkssERx"
+    }
+  ],
+  "modules": [
+    {
+      "id": "2bkssERx",
+      "desc": "fms-rest",
+      "name": "fms-rest",
+      "proxyUrl": "http://127.0.0.1:8005",
+      "url": "/fms-rest/"
     }
   ]
 }

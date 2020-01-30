@@ -15,6 +15,10 @@
             <i class="el-icon-s-operation"></i>
             <span slot="title">规则配置</span>
           </el-menu-item>
+           <el-menu-item index="modules">
+            <i class="el-icon-coin"></i>
+            <span slot="title">模块配置</span>
+          </el-menu-item>
           <el-menu-item index="setting">
             <i class="el-icon-setting"></i>
             <span slot="title">设置</span>

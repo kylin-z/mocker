@@ -1,0 +1,80 @@
+<template>
+  <div class="module-list">
+    <el-button
+      class="add-btn"
+      type="text"
+      icon="el-icon-plus"
+      @click="createModule"
+      >新增模块</el-button
+    >
+    <el-table :data="modules" stripe style="width: 100%">
+      <el-table-column type="index"> </el-table-column>
+      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="url" label="URL"></el-table-column>
+      <el-table-column prop="proxyUrl" label="PROXY_URL"></el-table-column>
+      <el-table-column prop="desc" label="描述"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            icon="el-icon-delete"
+            @click="() => removeModule(scope.row.id)"
+            >删除</el-button
+          >
+          <el-button
+            type="text"
+            icon="el-icon-edit"
+            @click="() => editModule(scope.row)"
+            >编辑</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+    <module-detail
+      @save="onSave"
+      :data="currentData"
+      :visible.sync="drawer"
+      @closed="drawer = false"
+    />
+  </div>
+</template>
+
+<script>
+import ModuleDetail from "./ModuleDetail";
+import { getModules } from "../api";
+import { mapGetters, mapActions } from "vuex";
+export default {
+  name: "modules-list",
+  components: {
+    ModuleDetail
+  },
+  computed: {
+    ...mapGetters(["modules"])
+  },
+  data() {
+    return {
+      drawer: false,
+      currentData: undefined
+    };
+  },
+  methods: {
+    ...mapActions(["setModulesList", "removeModule"]),
+    createModule() {
+      this.currentData = undefined;
+      this.drawer = true;
+    },
+    onSave() {
+      this.setModulesList();
+    },
+    editModule(rowData) {
+      this.currentData = rowData;
+      this.drawer = true;
+    }
+  },
+  mounted() {
+    this.setModulesList();
+  }
+};
+</script>
+
+<style lang="scss" scoped></style>

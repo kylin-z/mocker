@@ -9,6 +9,8 @@ function responseInterceptor(response) {
   }
 }
 
+// rule
+
 export const saveRule = param => {
   return responseInterceptor(ipcRenderer.sendSync("save-rule", param));
 };
@@ -21,3 +23,23 @@ export const getRules = param => {
   const reqId = shortid.generate();
   return responseInterceptor(ipcRenderer.sendSync("get-rules", param));
 };
+
+export const batchUpdateRulesById = (ids, rule) => {
+  return responseInterceptor(ipcRenderer.sendSync("batch-update-rule-by-id", {
+    ids,
+    rule
+  }));
+}
+
+// module
+export const getModules = param => {
+  const reqId = shortid.generate();
+  return responseInterceptor(ipcRenderer.sendSync("get-modules", param));
+};
+export const saveModule = param => {
+  return responseInterceptor(ipcRenderer.sendSync("save-module", param));
+};
+
+export const removeModule = id => {
+  return responseInterceptor(ipcRenderer.sendSync("remove-module", id));
+}
