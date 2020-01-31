@@ -10,6 +10,16 @@
       "status": true,
       "type": "EQUAL",
       "url": "/fms-rest/get-usr"
+    },
+    {
+      "id": "fEBFUFVj",
+      "method": "GET",
+      "response": {
+        "body": "{\r\n  a: 1,\r\n  b: 2\r\n}"
+      },
+      "type": "EQUAL",
+      "url": "/a/b",
+      "status": false
     }
   ],
   "modules": [

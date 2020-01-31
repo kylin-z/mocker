@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require("electron");
+const appServer = require('./server');
 
 function createWindow() {
   // 创建浏览器窗口
@@ -15,6 +16,9 @@ function createWindow() {
   win.loadURL("http://localhost:8080");
 }
 
-app.on("ready", createWindow);
+async function initApplication() {
+  await appServer.initiallize();
+  createWindow()
+}
 
-require('./server');
+app.on("ready", initApplication);

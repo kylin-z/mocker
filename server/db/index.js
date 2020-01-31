@@ -16,8 +16,7 @@ function successWrapper(data) {
 
 // -------------rule-------------
 
-function saveRule(event, rule) {
-  // TODO: 校验
+function saveRule(rule) {
   // 新增
   if (!rule.id) {
     const id = shortid.generate();
@@ -29,7 +28,7 @@ function saveRule(event, rule) {
       .get("rules")
       .find({ id })
       .value();
-    event.returnValue = successWrapper(value);
+    return value;
   } else {
     // 更新
     const id = rule.id;
@@ -38,27 +37,43 @@ function saveRule(event, rule) {
       .find({ id })
       .assign(rule)
       .write();
-    event.returnValue = successWrapper(value);
+    return value;
   }
+}
+function saveRuleListener(event, rule) {
+  // TODO: 校验
+  event.returnValue = successWrapper(saveRule(rule));
 }
 
 // 获取规则列表
-function getRules(event, param) {
-  const rules = db.get("rules").value();
-  event.returnValue = successWrapper(rules);
+function getRules(param) {
+  if(_.isEmpty(param)) {
+    const rules = db.get("rules").value();
+    return rules;
+  } else {
+    const rules = db.get("rules").filter(param).value();
+    return rules;
+  }
+}
+function getRulesListener(event, param) {
+  event.returnValue = successWrapper(getRules(param));
 }
 
-function removeRule(event, id) {
+// 删除
+function removeRule(id) {
   db.get("rules")
     .remove({ id })
     .write();
   const rules = db.get("rules").value();
-  event.returnValue = successWrapper(rules);
+  return rules;
+}
+function removeRuleListener(event, id) {
+  event.returnValue = successWrapper(removeRule(id));
 }
 
 // 批量更新规则
-function batchUpdateRuleById(event, { ids = [], rule = {} } = {}) {
-  console.log(ids, rule);
+
+function batchUpdateRuleById({ ids = [], rule = {} } = {}) {
   let values = [];
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
@@ -69,7 +84,11 @@ function batchUpdateRuleById(event, { ids = [], rule = {} } = {}) {
       .write();
     values.push(value);
   }
-  event.returnValue = successWrapper(values);
+  return values;
+}
+
+function batchUpdateRuleByIdListener(event, param) {
+  event.returnValue = successWrapper(batchUpdateRuleById(param));
 }
 
 
@@ -77,11 +96,9 @@ function batchUpdateRuleById(event, { ids = [], rule = {} } = {}) {
 
 // -------------module-------------
 
-
-function saveModule(event, module) {
-  // TODO: 校验
-  // 新增
-  if (!module.id) {
+function saveModule(module) {
+   // 新增
+   if (!module.id) {
     const id = shortid.generate();
     db.get("modules")
       .push({ id, ...module })
@@ -91,7 +108,7 @@ function saveModule(event, module) {
       .get("modules")
       .find({ id })
       .value();
-    event.returnValue = successWrapper(value);
+    return value;
   } else {
     // 更新
     const id = module.id;
@@ -100,22 +117,35 @@ function saveModule(event, module) {
       .find({ id })
       .assign(rule)
       .write();
-    event.returnValue = successWrapper(value);
+    return value;
   }
+}
+function saveModuleListener(event, module) {
+  // TODO: 校验
+  event.returnValue = successWrapper(saveModule(module));
 }
 
 // 获取模块列表
-function getModules(event, param) {
+
+function getModules(param) {
   const modules = db.get("modules").value();
-  event.returnValue = successWrapper(modules);
+  return modules;
+}
+function getModulesListener(event, param) {
+  event.returnValue = successWrapper(getModules(param));
 }
 
-function removeModule(event, id) {
+// 删除
+function removeModule(id) {
   db.get("modules")
     .remove({ id })
     .write();
   const modules = db.get("modules").value();
-  event.returnValue = successWrapper(modules);
+  return modules;
+}
+
+function removeModuleListener(event, id) {
+  event.returnValue = successWrapper(removeModule(id));
 }
 
 function initiallize() {
@@ -124,16 +154,23 @@ function initiallize() {
   // })
   db.defaults({ rules: [], modules: [] }).write();
   // rule
-  ipc.on("save-rule", saveRule);
-  ipc.on("get-rules", getRules);
-  ipc.on("remove-rule", removeRule);
-  ipc.on("batch-update-rule-by-id", batchUpdateRuleById);
+  ipc.on("save-rule", saveRuleListener);
+  ipc.on("get-rules", getRulesListener);
+  ipc.on("remove-rule", removeRuleListener);
+  ipc.on("batch-update-rule-by-id", batchUpdateRuleByIdListener);
   // module
-  ipc.on("save-module", saveModule);
-  ipc.on("get-modules", getModules);
-  ipc.on("remove-module", removeModule);
+  ipc.on("save-module", saveModuleListener);
+  ipc.on("get-modules", getModulesListener);
+  ipc.on("remove-module", removeModuleListener);
 }
 
 module.exports = {
-  initiallize
+  initiallize,
+  saveRule,
+  getRules,
+  removeRule,
+  batchUpdateRuleById,
+  saveModule,
+  getModules,
+  removeModule
 };
