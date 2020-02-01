@@ -31,6 +31,10 @@ export const batchUpdateRulesById = (ids, rule) => {
   }));
 }
 
+export const batchRemoveRuleById = (ids) => {
+  return responseInterceptor(ipcRenderer.sendSync("batch-remove-rule-by-id", ids));
+}
+
 // module
 export const getModules = param => {
   const reqId = shortid.generate();

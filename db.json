@@ -12,14 +12,11 @@
       "url": "/fms-rest/get-usr"
     },
     {
-      "id": "fEBFUFVj",
+      "id": "m865h9gp",
       "method": "GET",
-      "response": {
-        "body": "{\r\n  a: 1,\r\n  b: 2\r\n}"
-      },
+      "response": {},
       "type": "EQUAL",
-      "url": "/a/b",
-      "status": false
+      "url": "/a/b"
     }
   ],
   "modules": [

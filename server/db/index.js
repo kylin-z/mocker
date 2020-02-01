@@ -91,6 +91,20 @@ function batchUpdateRuleByIdListener(event, param) {
   event.returnValue = successWrapper(batchUpdateRuleById(param));
 }
 
+function batchRemoveRuleById(ids = []) {
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i];
+    db.get("rules")
+    .remove({ id })
+    .write();
+  }
+  const rules = db.get("rules").value();
+  return rules;
+}
+
+function batchRemoveRuleByIdListener(event, ids) {
+  event.returnValue = successWrapper(batchRemoveRuleById(ids));
+}
 
 
 
@@ -157,6 +171,7 @@ function initiallize() {
   ipc.on("save-rule", saveRuleListener);
   ipc.on("get-rules", getRulesListener);
   ipc.on("remove-rule", removeRuleListener);
+  ipc.on("batch-remove-rule-by-id", batchRemoveRuleByIdListener);
   ipc.on("batch-update-rule-by-id", batchUpdateRuleByIdListener);
   // module
   ipc.on("save-module", saveModuleListener);
@@ -170,6 +185,7 @@ module.exports = {
   getRules,
   removeRule,
   batchUpdateRuleById,
+  batchRemoveRuleById,
   saveModule,
   getModules,
   removeModule

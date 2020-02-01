@@ -39,6 +39,10 @@ export default new Vuex.Store({
       let rules = await Api.removeRule(id);
       commit(TYPES.SET_RULES, rules);
     },
+    async batchRemoveRuleById({ commit }, ids = []) {
+      let rules = await Api.batchRemoveRuleById(ids);
+      commit(TYPES.SET_RULES, rules);
+    },
     async batchUpdateRuleById({ commit }, { ids = [], rule = {} } = {}) {
       await Api.batchUpdateRulesById(ids, rule);
       let rules = await Api.getRules();

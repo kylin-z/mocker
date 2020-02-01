@@ -7,12 +7,46 @@
       @click="createRule"
       >新增规则</el-button
     >
-    <el-table :data="rules" stripe style="width: 100%">
+    <el-divider direction="vertical"></el-divider>
+    <el-popconfirm title="确定删除吗？" @onConfirm="batchRemoveRule">
+      <el-button slot="reference" type="text" icon="el-icon-delete"
+        >删除</el-button
+      >
+    </el-popconfirm>
+    <el-divider direction="vertical"></el-divider>
+    <el-button
+      class="add-btn"
+      type="text"
+      icon="el-icon-video-play"
+      @click="()=>batchUpdateStatus(selectedRowKeys, true)"
+      >启用</el-button
+    >
+    <el-divider direction="vertical"></el-divider>
+    <el-button
+      class="add-btn"
+      type="text"
+      icon="el-icon-video-pause"
+      @click="()=>batchUpdateStatus(selectedRowKeys, false)"
+      >禁用</el-button
+    >
+    <el-table
+      :data="rules"
+      stripe
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55"> </el-table-column>
       <el-table-column type="index"> </el-table-column>
       <el-table-column prop="type" label="TYPE" width="180"></el-table-column>
       <el-table-column prop="url" label="URL"></el-table-column>
       <el-table-column prop="method" label="METHOD"></el-table-column>
-      <el-table-column prop="module" label="所属模块">
+      <el-table-column
+        prop="module"
+        label="所属模块"
+        :filters="modulesFilterMap"
+        :filter-method="filterModuleId"
+        filter-placement="bottom-end"
+      >
         <template slot-scope="scope">
           <span>{{ getModuleName(scope.row.moduleId) }}</span>
         </template>
@@ -31,12 +65,13 @@
         <template slot-scope="scope">
           <el-popconfirm
             title="确定删除吗？"
-            @onConfirm="() => removeRule(scope.row.id)"
+            @onConfirm="() => batchRemoveRuleById([scope.row.id])"
           >
             <el-button slot="reference" type="text" icon="el-icon-delete"
               >删除</el-button
             >
           </el-popconfirm>
+          <el-divider direction="vertical"></el-divider>
           <el-button
             type="text"
             icon="el-icon-edit"
@@ -65,21 +100,31 @@ export default {
     RuleDetail
   },
   computed: {
-    ...mapGetters(["rules", "modules"])
+    ...mapGetters(["rules", "modules"]),
+    modulesFilterMap() {
+      return this.modules.map(o => ({ text: o.name, value: o.id }));
+    },
+    selectedRowKeys() {
+      return this.multipleSelection.map(o=>o.id);
+    }
   },
   data() {
     return {
       drawer: false,
-      currentData: undefined
+      currentData: undefined,
+      multipleSelection: []
     };
   },
   methods: {
     ...mapActions([
       "setRulesList",
-      "removeRule",
       "batchUpdateRuleById",
-      "setModulesList"
+      "setModulesList",
+      "batchRemoveRuleById"
     ]),
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
     createRule() {
       this.currentData = undefined;
       this.drawer = true;
@@ -98,10 +143,18 @@ export default {
           status
         }
       });
+
     },
     getModuleName(moduleId) {
       const module = this.modules.find(m => m.id === moduleId);
       return _.result(module, "name");
+    },
+    filterModuleId(value, row) {
+      return row.moduleId === value;
+    },
+    batchRemoveRule() {
+      const ids = this.selectedRowKeys;
+      this.batchRemoveRuleById(ids);
     }
   },
   mounted() {
