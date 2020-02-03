@@ -1,5 +1,5 @@
 const { app, BrowserWindow } = require("electron");
-const appServer = require('./server');
+const appServer = require("./server");
 
 function createWindow() {
   // 创建浏览器窗口
@@ -10,15 +10,22 @@ function createWindow() {
     webPreferences: { webSecurity: false, nodeIntegration: true }
   });
 
-  win.webContents.openDevTools();
-
-  // 加载index.html文件
-  win.loadURL("http://localhost:8080");
+  if (process.env.NODE_ENV === 'development'){
+    win.webContents.openDevTools();
+    // 加载index.html文件
+    win.loadURL("http://localhost:8080");
+  } else {
+    win.loadFile("./dist/index.html");
+  }
 }
 
 async function initApplication() {
-  await appServer.initiallize();
-  createWindow()
+  try {
+    await appServer.initiallize();
+    createWindow();
+  } catch (e) {
+    app.quit();
+  }
 }
 
 app.on("ready", initApplication);

@@ -2,9 +2,12 @@ const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const ipc = require("electron").ipcMain;
 const shortid = require("shortid");
+const app = require("electron").app;
+const path = require("path");
 const _ = require("lodash");
 
-const adapter = new FileSync("db.json");
+//Users/[user name]/Library/Application Support/[app name]/db.json
+const adapter = new FileSync(path.join(app.getPath('userData'), "db.json"));
 const db = low(adapter);
 
 function successWrapper(data) {

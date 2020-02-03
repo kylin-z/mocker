@@ -1,5 +1,12 @@
 # mocker
 
+# 打包
+
+- macOS
+
+```
+npm run build:app
+```
 
 # todo
 
