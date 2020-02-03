@@ -1,34 +1,22 @@
 <template>
   <div class="module-list">
-    <el-button
-      class="add-btn"
-      type="text"
-      icon="el-icon-plus"
-      @click="createModule"
-      >新增模块</el-button
-    >
+    <el-button class="add-btn" type="text" icon="el-icon-plus" @click="createModule">新增模块</el-button>
     <el-table :data="modules" stripe style="width: 100%">
-      <el-table-column type="index"> </el-table-column>
+      <el-table-column type="index"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="url" label="URL"></el-table-column>
-      <el-table-column prop="proxyUrl" label="PROXY_URL"></el-table-column>
+      <el-table-column label="PROXY_ADDRESS">
+        <template slot-scope="scope">
+          <span>{{getProxyAddress(scope.row)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="desc" label="描述"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-popconfirm title="确定删除吗？" @onConfirm="() => removeModule(scope.row.id)">
-            <el-button
-              slot="reference"
-              type="text"
-              icon="el-icon-delete"
-              >删除</el-button
-            >
+            <el-button slot="reference" type="text" icon="el-icon-delete">删除</el-button>
           </el-popconfirm>
-          <el-button
-            type="text"
-            icon="el-icon-edit"
-            @click="() => editModule(scope.row)"
-            >编辑</el-button
-          >
+          <el-button type="text" icon="el-icon-edit" @click="() => editModule(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -45,6 +33,8 @@
 import ModuleDetail from "./ModuleDetail";
 import { getModules } from "../api";
 import { mapGetters, mapActions } from "vuex";
+import _ from "lodash";
+
 export default {
   name: "modules-list",
   components: {
@@ -71,6 +61,11 @@ export default {
     editModule(rowData) {
       this.currentData = rowData;
       this.drawer = true;
+    },
+    getProxyAddress(row) {
+      const hostname = _.result(row, "proxyConfig.hostname");
+      const port = _.result(row, "proxyConfig.port");
+      return hostname + port ? `:${port}` : "";
     }
   },
   mounted() {

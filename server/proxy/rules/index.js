@@ -48,13 +48,17 @@ module.exports = {
           return mockResponse;
         }
         let newOption = requestDetail.requestOptions;
+        let proxyConfig = {};
+        try {
+          let config = JSON.parse(module.proxyConfig);
+          if (!_.isEmpty(proxyConfig)) {
+            proxyConfig = config;
+          }
+        } catch (e) {}
         return {
           requestOptions: {
             ...newOption,
-            ...{
-              hostname: "116.62.18.69",
-              port: 80
-            }
+            ...proxyConfig
           }
         };
       }
