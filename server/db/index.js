@@ -7,7 +7,13 @@ const path = require("path");
 const _ = require("lodash");
 
 //Users/[user name]/Library/Application Support/[app name]/db.json
-const adapter = new FileSync(path.join(app.getPath('userData'), "db.json"));
+let adapter;
+if (process.env.NODE_ENV === 'development'){
+  adapter = new FileSync("db.json");
+} else {
+  adapter = new FileSync(path.join(app.getPath('userData'), "db.json"));
+}
+
 const db = low(adapter);
 
 function successWrapper(data) {
@@ -132,7 +138,7 @@ function saveModule(module) {
     const value = db
       .get("modules")
       .find({ id })
-      .assign(rule)
+      .assign(module)
       .write();
     return value;
   }

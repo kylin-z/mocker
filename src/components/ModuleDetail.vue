@@ -41,7 +41,8 @@ const defaultFormValue = {
       port: 80
     },
     {
-      separator: true
+      separator: true,
+      quotes: "all"
     }
   )
 };
@@ -87,7 +88,8 @@ export default {
     onProxyConfigBlur() {
       let obj = Hjson.parse(this.form.proxyConfig);
       let response = Hjson.stringify(obj, {
-        separator: true
+        separator: true,
+        quotes: "all"
       });
       this.form.proxyConfig = response;
     }

@@ -51,10 +51,12 @@ module.exports = {
         let proxyConfig = {};
         try {
           let config = JSON.parse(module.proxyConfig);
-          if (!_.isEmpty(proxyConfig)) {
+          if (!_.isEmpty(config)) {
             proxyConfig = config;
           }
-        } catch (e) {}
+        } catch (e) {
+          console.log(e)
+        }
         return {
           requestOptions: {
             ...newOption,

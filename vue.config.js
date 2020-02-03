@@ -2,5 +2,8 @@ module.exports = {
   configureWebpack: {
     target: 'electron-renderer',
   },
-  publicPath: './'
+  publicPath: './',
+  devServer: {
+    port: 8686
+  }
 }

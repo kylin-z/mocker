@@ -102,7 +102,8 @@ export default {
     onResponseBodyBlur() {
       let obj = Hjson.parse(this.form.response.body);
       let response = Hjson.stringify(obj, {
-        separator: true
+        separator: true,
+        quotes: "all"
       });
       this.form.response.body = response;
     },

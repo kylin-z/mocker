@@ -13,7 +13,7 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development'){
     win.webContents.openDevTools();
     // 加载index.html文件
-    win.loadURL("http://localhost:8080");
+    win.loadURL("http://localhost:8686");
   } else {
     win.loadFile("./dist/index.html");
   }

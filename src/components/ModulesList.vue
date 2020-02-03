@@ -63,9 +63,13 @@ export default {
       this.drawer = true;
     },
     getProxyAddress(row) {
-      const hostname = _.result(row, "proxyConfig.hostname");
-      const port = _.result(row, "proxyConfig.port");
-      return hostname + port ? `:${port}` : "";
+      try {
+        const proxyConfig = JSON.parse(_.result(row, "proxyConfig", "{}"));
+        const hostname = proxyConfig.hostname;
+        const port = proxyConfig.port;
+        return hostname + (port ? `:${port}` : "");
+      } catch (e) {
+      }
     }
   },
   mounted() {
