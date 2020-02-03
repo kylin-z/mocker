@@ -5,13 +5,19 @@ const shortid = require("shortid");
 const app = require("electron").app;
 const path = require("path");
 const _ = require("lodash");
+const fs = require("fs");
 
 //Users/[user name]/Library/Application Support/[app name]/db.json
 let adapter;
-if (process.env.NODE_ENV === 'development'){
+if (process.env.NODE_ENV === "development") {
   adapter = new FileSync("db.json");
 } else {
-  adapter = new FileSync(path.join(app.getPath('userData'), "db.json"));
+  const appPath = app.getPath("userData");
+  // 跑到这里的时候还没有生成userData文件夹，先用这个姿势解决，待改
+  if (!fs.existsSync(appPath)) {
+    fs.mkdirSync(appPath);
+  }
+  adapter = new FileSync(path.join(appPath, "db.json"));
 }
 
 const db = low(adapter);
@@ -56,11 +62,14 @@ function saveRuleListener(event, rule) {
 
 // 获取规则列表
 function getRules(param) {
-  if(_.isEmpty(param)) {
+  if (_.isEmpty(param)) {
     const rules = db.get("rules").value();
     return rules;
   } else {
-    const rules = db.get("rules").filter(param).value();
+    const rules = db
+      .get("rules")
+      .filter(param)
+      .value();
     return rules;
   }
 }
@@ -104,8 +113,8 @@ function batchRemoveRuleById(ids = []) {
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
     db.get("rules")
-    .remove({ id })
-    .write();
+      .remove({ id })
+      .write();
   }
   const rules = db.get("rules").value();
   return rules;
@@ -115,13 +124,11 @@ function batchRemoveRuleByIdListener(event, ids) {
   event.returnValue = successWrapper(batchRemoveRuleById(ids));
 }
 
-
-
 // -------------module-------------
 
 function saveModule(module) {
-   // 新增
-   if (!module.id) {
+  // 新增
+  if (!module.id) {
     const id = shortid.generate();
     db.get("modules")
       .push({ id, ...module })
